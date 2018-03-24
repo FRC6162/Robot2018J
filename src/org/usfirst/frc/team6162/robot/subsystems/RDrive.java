@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.VictorSP;
 /**
  *
  */
-public class Drive extends Subsystem {
+public class RDrive extends Subsystem {
 
     // Initialize motors (competition robot)
 	//private final WPI_TalonSRX rightFront = new WPI_TalonSRX(1);

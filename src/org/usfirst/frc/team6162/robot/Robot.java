@@ -118,16 +118,18 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		
+		drive.driveArcade(Robot.m_oi.leftJoy.getY(), Robot.m_oi.leftJoy.getX());
+		/*
 		if (Robot.m_oi.leftJoy.getX() == 0 && Robot.m_oi.leftJoy.getY() == 0) {
 			stepAccelerateTimer = 0;
 		}
 		else {
 			if (stepAccelerateTimer < 5) {
 				stepAccelerateTimer = stepAccelerateTimer + 1;
-				drive.driveArcade(Robot.m_oi.leftJoy.getMagnitude()*stepAccelerateTimer*0.2, somethingConvertAxisToRate);
+				drive.driveArcade(Robot.m_oi.leftJoy.getMagnitude()*stepAccelerateTimer*0.2, 1);
 			}
 		}
+		*/
 	}
 
 	/**
