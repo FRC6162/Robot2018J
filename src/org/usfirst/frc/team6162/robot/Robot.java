@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import javax.xml.crypto.Data;
 
 import org.usfirst.frc.team6162.robot.commands.ExampleCommand;
-import org.usfirst.frc.team6162.robot.subsystems.Drive;
+import org.usfirst.frc.team6162.robot.subsystems.RDrive;
 import org.usfirst.frc.team6162.robot.subsystems.ExampleSubsystem;
 
 /**
@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
 	
 	//Set the timer for step accelerate
 	Integer stepAccelerateTimer = new Integer(0);
-	Drive drive =  new Drive();
+	RDrive drive =  new RDrive();
 
 	/**
 	 * This function is run when the robot is first started up and should be

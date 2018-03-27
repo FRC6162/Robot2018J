@@ -1,21 +1,17 @@
 package org.usfirst.frc.team6162.robot.commands;
 
 import org.usfirst.frc.team6162.robot.subsystems.RDrive;
+import org.usfirst.frc.team6162.robot.subsystems.Elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
+
 
 
 /**
  *
  */
-public class joystickDrive extends Command {
-	RDrive drive = new RDrive();	
-    public joystickDrive() {
-        // Use requires() here to declare subsystem dependencies
-        // eg. requires(chassis);
-    	//requires(Drive);
-    	
-    }
+public class Relevator extends Command {
+	//Elevator E = new Elevator();	
 
     // Called just before this Command runs the first time
     protected void initialize() {
@@ -24,9 +20,17 @@ public class joystickDrive extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	//drive.driveArcade(1,1);
-    	drive.EncoderDrive();
-    	
+    	/*
+    	if(controller.getAButton()) { //Button 1
+		E.moveUp();
+		}
+    	else if (controller.getBButton()) { //Button 2
+		E.moveDown();
+		}
+    	else {
+			E.stopE();
+    }
+    */
     }
 
     // Make this return true when this Command no longer needs to run execute()
