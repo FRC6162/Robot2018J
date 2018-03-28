@@ -12,11 +12,17 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Encoder;
 
 import javax.xml.crypto.Data;
 
 import org.usfirst.frc.team6162.robot.commands.ExampleCommand;
+import org.usfirst.frc.team6162.robot.commands.joystickDrive;
+import org.usfirst.frc.team6162.robot.commands.prepareGetCube;
 import org.usfirst.frc.team6162.robot.subsystems.RDrive;
+import org.usfirst.frc.team6162.robot.subsystems.Arms;
+import org.usfirst.frc.team6162.robot.subsystems.Elevator;
 import org.usfirst.frc.team6162.robot.subsystems.ExampleSubsystem;
 
 /**
@@ -29,14 +35,18 @@ import org.usfirst.frc.team6162.robot.subsystems.ExampleSubsystem;
 public class Robot extends TimedRobot {
 	public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
 	public static OI m_oi;
+	public static Arms rarms;
+	public static Elevator elevator;
+	public static RDrive rdrive;
+	XboxController controller;
 
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 	
 	//Set the timer for step accelerate
 	Integer stepAccelerateTimer = new Integer(0);
-	RDrive drive =  new RDrive();
-
+	//RDrive drive =  new RDrive();
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -44,9 +54,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		m_oi = new OI();
+		rarms = new Arms();
+		rdrive = new RDrive();
+		elevator = new Elevator();
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
+	 	
 	}
 
 	/**
@@ -118,7 +132,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		drive.driveArcade(Robot.m_oi.leftJoy.getY(), Robot.m_oi.leftJoy.getX());
+		Robot.rdrive.driveArcade(Robot.m_oi.leftJoy.getY(), Robot.m_oi.leftJoy.getX());
+		m_oi.button1.whenPressed(new joystickDrive());
+		m_oi.button1.whenPressed(new prepareGetCube());
+		//m_oi.button2.whenPressed(new joystickDrive());
 		/*
 		if (Robot.m_oi.leftJoy.getX() == 0 && Robot.m_oi.leftJoy.getY() == 0) {
 			stepAccelerateTimer = 0;

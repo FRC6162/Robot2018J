@@ -2,6 +2,8 @@ package org.usfirst.frc.team6162.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  *  OI = Operator Interface (Leo 2018-3-19)
@@ -38,4 +40,14 @@ public class OI {
 	// button.whenReleased(new ExampleCommand());
 	Joystick leftJoy = new Joystick(1);
 	XboxController mainController = new XboxController(0);
+	Button button1 = new JoystickButton(leftJoy, 1),
+			button2 = new JoystickButton(leftJoy, 2),
+			button3 = new JoystickButton(leftJoy, 3),
+			button4 = new JoystickButton(leftJoy, 4),
+			button5 = new JoystickButton(leftJoy, 5),
+			button6 = new JoystickButton(leftJoy, 6),
+			button7 = new JoystickButton(leftJoy, 7),
+			button8 = new JoystickButton(leftJoy, 8);
+	
+	
 }
