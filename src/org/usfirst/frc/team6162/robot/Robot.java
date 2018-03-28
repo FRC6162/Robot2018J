@@ -113,23 +113,27 @@ public class Robot extends TimedRobot {
 	}
 
 	/**
-	 * This function is called periodically during operator control.
+	 * This function is called periodically during operator control.20
+     * Defaultly, it would run 100 times per second. 
 	 */
 	@Override
 	public void teleopPeriodic() {
+        /*
 		Scheduler.getInstance().run();
 		drive.driveArcade(Robot.m_oi.leftJoy.getY(), Robot.m_oi.leftJoy.getX());
-		/*
+		*/
+        
+        // The step accelerate can let the motor start from a slow speed and reach full required speed in a certain time. (0.5s, for current setting)
 		if (Robot.m_oi.leftJoy.getX() == 0 && Robot.m_oi.leftJoy.getY() == 0) {
 			stepAccelerateTimer = 0;
 		}
 		else {
-			if (stepAccelerateTimer < 5) {
+			if (stepAccelerateTimer < 50) {
 				stepAccelerateTimer = stepAccelerateTimer + 1;
-				drive.driveArcade(Robot.m_oi.leftJoy.getMagnitude()*stepAccelerateTimer*0.2, 1);
+				drive.driveArcade(Robot.m_oi.leftJoy.getMagnitude()*stepAccelerateTimer*0.02, Robot.m_oi.leftJoy.getX());
 			}
 		}
-		*/
+		
 	}
 
 	/**
