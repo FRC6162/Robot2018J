@@ -48,8 +48,8 @@ public class Arms extends Subsystem {
 	    S2.set(0);
 		
 	    }
- 	public void EncoderAUp(){
- 		double m = 1000.0;
+ 	public void EncoderAUp(double m){
+ 		//double m = 1000.0;
  		if (Robot.arms.EC4.getDistance() <= m) {
  			S1.set(0.3);
  	    		S2.set(0.3);

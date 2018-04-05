@@ -122,6 +122,9 @@ public class RDrive extends Subsystem {
 			if (Robot.rdrive.gyro.getAngle() >= angle) {
 				Robot.rdrive.driveArcade(0.5, -0.7);
 			}
+			else {
+				Robot.rdrive.driveArcade(0, 0);
+			}
 		}
 		
 	}

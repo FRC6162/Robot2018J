@@ -27,6 +27,7 @@ import org.usfirst.frc.team6162.robot.commands.armUp;
 import org.usfirst.frc.team6162.robot.commands.auto1;
 import org.usfirst.frc.team6162.robot.commands.auto10;
 import org.usfirst.frc.team6162.robot.commands.auto11;
+import org.usfirst.frc.team6162.robot.commands.auto12;
 import org.usfirst.frc.team6162.robot.commands.auto2;
 import org.usfirst.frc.team6162.robot.commands.auto3;
 import org.usfirst.frc.team6162.robot.commands.auto4;
@@ -69,7 +70,7 @@ public class Robot extends TimedRobot {
 	XboxController controller;
 
 	Command m_autonomousCommand;
-	SendableChooser<Command> m_chooser = new SendableChooser<>();
+	SendableChooser<Command> m_chooser;
 	
 	public static NetworkTableEntry EC1e;
 	public static NetworkTableEntry EC2e;
@@ -95,6 +96,7 @@ public class Robot extends TimedRobot {
 		rdrive = new RDrive();
 		elevator = new Elevator();
 		Servo = new servo();
+		m_chooser = new SendableChooser<Command>();
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		m_chooser.addObject("Cross the line", new auto1());
 		m_chooser.addObject("R-Rswitch", new auto2());
@@ -107,6 +109,7 @@ public class Robot extends TimedRobot {
 		m_chooser.addObject("R-Rscale", new auto9());
 		m_chooser.addObject("L-Rscale", new auto10());
 		m_chooser.addObject("R-Lscale", new auto11());
+		m_chooser.addObject("forward->turning", new auto12());
 		
 		inst = NetworkTableInstance.getDefault();
 		table = inst.getTable("SmartDashboard");
@@ -147,7 +150,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		m_autonomousCommand = m_chooser.getSelected();
 		/* auto modes
 	String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
@@ -222,6 +224,7 @@ public class Robot extends TimedRobot {
 		 */
 
 		// schedule the autonomous command (example)
+		m_autonomousCommand = (Command) m_chooser.getSelected();
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.start();
 		}
@@ -313,11 +316,17 @@ public class Robot extends TimedRobot {
 	    	Robot.Servo.cameraBack();
 	    }
 	    if (m_oi.leftJoy.getPOV() == 90) {
+	    	//adjust left elevator up
 	  	Robot.elevator.adjustLeftUp();
 	    }
 	    if (m_oi.leftJoy.getPOV() == 270) {
+	    	//adjust left elevator down
 		  	Robot.elevator.adjustLeftDown();
 		    }
+	    if (m_oi.leftJoy.getRawAxis(2) >= 0.8) {
+	    	//climbing - set the arm
+	    	Robot.arms.EncoderAUp(800);
+	    }
 	   
 	    
 	    

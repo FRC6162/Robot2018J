@@ -44,8 +44,8 @@ public class encoder extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-    double d1 = 1000.0;
-    	if (Robot.rdrive.EC1.getDistance() <= d1) {
+    //double d1 = 1000.0;
+    	if (Robot.rdrive.EC1.getDistance() <= d2) {
         return false;
     }
     	else {
