@@ -47,7 +47,8 @@ public class OI {
 			button5 = new JoystickButton(leftJoy, 5),
 			button6 = new JoystickButton(leftJoy, 6),
 			button7 = new JoystickButton(leftJoy, 7),
-			button8 = new JoystickButton(leftJoy, 8);
-	
+			button8 = new JoystickButton(leftJoy, 8),
+			button9 = new JoystickButton(leftJoy, 9),
+	       	button10 = new JoystickButton(leftJoy, 10);
 	
 }

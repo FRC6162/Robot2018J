@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class prepareGetCube extends CommandGroup {
-
-    public prepareGetCube() {
+public class auto6 extends CommandGroup {
+	//Left -> Right Switch
+    public auto6() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
@@ -24,7 +24,12 @@ public class prepareGetCube extends CommandGroup {
         // e.g. if Command1 requires chassis, and Command2 requires arm,
         // a CommandGroup containing them would require both the chassis and the
         // arm.
-    addSequential(new encoderElevatorDown(6000));
+    	addSequential(new gyroD(56));
+    	addSequential(new encoder(1267));
+    	addSequential(new gyroD(-56));
+    	addSequential(new encoder(142));
+    	addSequential(new encoderArmUp(1000));
     	addSequential(new openArm());
+    	addSequential(new encoderArmDown(1000));
     }
 }

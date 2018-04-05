@@ -13,14 +13,41 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 
 import javax.xml.crypto.Data;
 
 import org.usfirst.frc.team6162.robot.commands.ExampleCommand;
-import org.usfirst.frc.team6162.robot.commands.joystickDrive;
+import org.usfirst.frc.team6162.robot.commands.armDown;
+import org.usfirst.frc.team6162.robot.commands.armUp;
+import org.usfirst.frc.team6162.robot.commands.auto1;
+import org.usfirst.frc.team6162.robot.commands.auto10;
+import org.usfirst.frc.team6162.robot.commands.auto11;
+import org.usfirst.frc.team6162.robot.commands.auto2;
+import org.usfirst.frc.team6162.robot.commands.auto3;
+import org.usfirst.frc.team6162.robot.commands.auto4;
+import org.usfirst.frc.team6162.robot.commands.auto5;
+import org.usfirst.frc.team6162.robot.commands.auto6;
+import org.usfirst.frc.team6162.robot.commands.auto7;
+import org.usfirst.frc.team6162.robot.commands.auto8;
+import org.usfirst.frc.team6162.robot.commands.auto9;
+import org.usfirst.frc.team6162.robot.commands.closeArm;
+import org.usfirst.frc.team6162.robot.commands.deliverCube;
+import org.usfirst.frc.team6162.robot.commands.getCube;
+import org.usfirst.frc.team6162.robot.commands.gyroD;
+import org.usfirst.frc.team6162.robot.commands.encoder;
+import org.usfirst.frc.team6162.robot.commands.moveDownElevator;
+import org.usfirst.frc.team6162.robot.commands.moveUpElevator;
+import org.usfirst.frc.team6162.robot.commands.openArm;
 import org.usfirst.frc.team6162.robot.commands.prepareGetCube;
+import org.usfirst.frc.team6162.robot.commands.stopArm;
+import org.usfirst.frc.team6162.robot.commands.stopElevator;
 import org.usfirst.frc.team6162.robot.subsystems.RDrive;
+import org.usfirst.frc.team6162.robot.subsystems.servo;
 import org.usfirst.frc.team6162.robot.subsystems.Arms;
 import org.usfirst.frc.team6162.robot.subsystems.Elevator;
 import org.usfirst.frc.team6162.robot.subsystems.ExampleSubsystem;
@@ -35,18 +62,28 @@ import org.usfirst.frc.team6162.robot.subsystems.ExampleSubsystem;
 public class Robot extends TimedRobot {
 	public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
 	public static OI m_oi;
-	public static Arms rarms;
+	public static Arms arms;
 	public static Elevator elevator;
 	public static RDrive rdrive;
+	public static servo Servo;
 	XboxController controller;
 
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 	
-	//Set the timer for step accelerate
-	Integer stepAccelerateTimer = new Integer(0);
-	//RDrive drive =  new RDrive();
+	public static NetworkTableEntry EC1e;
+	public static NetworkTableEntry EC2e;
+	public static NetworkTableEntry EC3e;
+	public static NetworkTableEntry EC4e;
+	NetworkTable table;
+	NetworkTableInstance inst;
 	
+	//Set the timer for step accelerate
+	//Integer stepAccelerateTimer = new Integer(0);
+	int stepAccelerateTimer = 0;
+	//RDrive drive =  new RDrive();
+	double start = 0; //0 for left, 1 for middle, 2 for right
+	double choice = 1; //1 for switch, 2 for scale, 3 for crossing the line
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -54,13 +91,32 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		m_oi = new OI();
-		rarms = new Arms();
+		arms = new Arms();
 		rdrive = new RDrive();
 		elevator = new Elevator();
+		Servo = new servo();
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
+		m_chooser.addObject("Cross the line", new auto1());
+		m_chooser.addObject("R-Rswitch", new auto2());
+		m_chooser.addObject("L-Lswitch", new auto3());
+		m_chooser.addObject("M-Lswitch", new auto4());
+		m_chooser.addObject("M-Rswitch", new auto5());
+		m_chooser.addObject("L-Rswitch", new auto6());
+		m_chooser.addObject("R-Lswitch", new auto7());
+		m_chooser.addObject("L-Lscale", new auto8());
+		m_chooser.addObject("R-Rscale", new auto9());
+		m_chooser.addObject("L-Rscale", new auto10());
+		m_chooser.addObject("R-Lscale", new auto11());
+		
+		inst = NetworkTableInstance.getDefault();
+		table = inst.getTable("SmartDashboard");
+		EC1e = table.getEntry("EC1");
+		EC2e = table.getEntry("EC2");
+		EC3e = table.getEntry("EC3");
+		EC4e = table.getEntry("EC4");
 		SmartDashboard.putData("Auto mode", m_chooser);
 	 	
+		Robot.arms.compressor.setClosedLoopControl(true);
 	}
 
 	/**
@@ -92,6 +148,71 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		m_autonomousCommand = m_chooser.getSelected();
+		/* auto modes
+	String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+        if(gameData.length() > 0)
+        {
+ if (choice == 1) {
+  if(gameData.charAt(0) == 'L')
+  {
+	  if (start == 0) {
+		  new auto3();
+	  }
+	  else if (start == 1) {
+		  new auto4();
+	  }
+	  else {
+		  new auto7();
+	  }
+  } else if(gameData.charAt(0) == 'R') {
+	  if (start == 0) {
+		  new auto6();
+	  }
+	  else if (start == 1) {
+		  new auto5();
+  }
+	  else {
+		  new auto2();
+	  }
+        }
+  else {
+	  new auto1();
+  }
+ }
+        
+ if (choice == 2) {
+	  if(gameData.charAt(1) == 'L')
+	  {
+		  if (start == 0) {
+			  new auto8();
+		  }
+		  else if (start == 1) {
+			  new auto1();
+		  }
+		  else {
+			  new auto11();
+		  }
+	  } else if(gameData.charAt(1) == 'R') {
+		  if (start == 0) {
+			  new auto10();
+		  }
+		  else if (start == 1) {
+			  new auto1();
+	  }
+		  else {
+			  new auto9();
+		  }
+	        }
+	  else {
+		  new auto1();
+	  }
+	 }
+        }
+ if (choice == 3) {
+	 new auto1();
+ }
+ */
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -132,10 +253,74 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		Robot.rdrive.driveArcade(Robot.m_oi.leftJoy.getY(), Robot.m_oi.leftJoy.getX());
+		Robot.rdrive.driveArcade(Robot.m_oi.leftJoy.getY()*0.75, Robot.m_oi.leftJoy.getX()*0.75);
+		Robot.EC1e.setDouble(Robot.rdrive.EC1.getDistance());
+		Robot.EC2e.setDouble(Robot.rdrive.EC2.getDistance());
+		/*
+		if (Robot.m_oi.leftJoy.getX() < 0.1 && Robot.m_oi.leftJoy.getY() < 0.1) {
+			stepAccelerateTimer = 0;
+		}
+		else {
+			if (stepAccelerateTimer < 50) {
+				stepAccelerateTimer = stepAccelerateTimer + 1;
+				Robot.rdrive.driveArcade(Robot.m_oi.leftJoy.getY()*stepAccelerateTimer*0.02, Robot.m_oi.leftJoy.getX());
+			}
+			else {
+				Robot.rdrive.driveArcade(Robot.m_oi.leftJoy.getY(), Robot.m_oi.leftJoy.getX());
+			}
+		}
+		*/
+		
+		
+		/* for test robot
 		m_oi.button1.whenPressed(new joystickDrive());
+		m_oi.button2.whenReleased(new stopElevator());
+		m_oi.button2.whenPressed(new moveDownElevator());
+		m_oi.button3.whenPressed(new armUp());
+		m_oi.button3.whenReleased(new stopArm());
+		m_oi.button4.whenPressed(new prepare());
+		m_oi.button5.whenPressed(new gyro());
+		*/
+		//code for competition robot
 		m_oi.button1.whenPressed(new prepareGetCube());
-		//m_oi.button2.whenPressed(new joystickDrive());
+		m_oi.button2.whenPressed(new getCube());
+		m_oi.button3.whenPressed(new deliverCube());
+		m_oi.button4.whenPressed(new moveUpElevator());
+		m_oi.button5.whenPressed(new openArm());
+		m_oi.button6.whenPressed(new closeArm());
+		m_oi.button7.whenPressed(new armUp());
+		m_oi.button8.whenPressed(new armDown());
+		m_oi.button10.whenPressed(new moveDownElevator());
+		
+		//Try whileheld
+		//m_oi.button4.whileHeld(new moveUpElevator());
+		//m_oi.button7.whileHeld(new armUp());
+		//m_oi.button8.whileHeld(new armDown());
+		//m_oi.button10.whileHeld(new moveDownElevator());
+		
+		m_oi.button4.whenReleased(new stopElevator());
+		m_oi.button7.whenReleased(new stopArm());
+		m_oi.button8.whenReleased(new stopArm());
+		m_oi.button10.whenReleased(new stopElevator());
+		
+	    if (m_oi.leftJoy.getPOV() == 0) {
+	    	//camera facing front
+	    	Robot.Servo.cameraFront();
+	    }
+	    
+	    if (m_oi.leftJoy.getPOV() == 180) {
+	    	//camera facing back
+	    	Robot.Servo.cameraBack();
+	    }
+	    if (m_oi.leftJoy.getPOV() == 90) {
+	  	Robot.elevator.adjustLeftUp();
+	    }
+	    if (m_oi.leftJoy.getPOV() == 270) {
+		  	Robot.elevator.adjustLeftDown();
+		    }
+	   
+	    
+	    
 		/*
 		if (Robot.m_oi.leftJoy.getX() == 0 && Robot.m_oi.leftJoy.getY() == 0) {
 			stepAccelerateTimer = 0;
@@ -143,7 +328,7 @@ public class Robot extends TimedRobot {
 		else {
 			if (stepAccelerateTimer < 5) {
 				stepAccelerateTimer = stepAccelerateTimer + 1;
-				drive.driveArcade(Robot.m_oi.leftJoy.getMagnitude()*stepAccelerateTimer*0.2, 1);
+				drive.driveArcade(Robot.m_oi.leftJoy.getMagnitude()*stepAccelerateTimer*0.02, Robot.m_oi.leftJoy.getX());
 			}
 		}
 		*/

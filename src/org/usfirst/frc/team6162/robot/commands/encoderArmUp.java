@@ -1,45 +1,48 @@
 package org.usfirst.frc.team6162.robot.commands;
 
-import org.usfirst.frc.team6162.robot.subsystems.RDrive;
-import org.usfirst.frc.team6162.robot.subsystems.Elevator;
+import org.usfirst.frc.team6162.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-
-
 
 /**
  *
  */
-public class Relevator extends Command {
-	//Elevator E = new Elevator();	
+public class encoderArmUp extends Command {
+double m2;
+    public encoderArmUp(double m1) {
+        // Use requires() here to declare subsystem dependencies
+        // eg. requires(chassis);
+    	super("encoderArmUp");
+    	requires(Robot.arms);
+    	m2 = m1;
+    }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	
+    	Robot.arms.EC4.reset();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	/*
-    	if(controller.getAButton()) { //Button 1
-		E.moveUp();
-		}
-    	else if (controller.getBButton()) { //Button 2
-		E.moveDown();
-		}
-    	else {
-			E.stopE();
-    }
-    */
+    	Robot.arms.flipUp();
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+    	//double m = 1000.0;
+    	if (Robot.arms.EC4.getDistance() <= m2)
+    	{
+    		return false;
+    	}
+    	else {
+    		return true;
+    	}
+        
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.arms.stopA();
     }
 
     // Called when another command which requires one or more of the same
