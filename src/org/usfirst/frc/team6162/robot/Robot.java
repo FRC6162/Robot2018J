@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import javax.xml.crypto.Data;
 
 import org.usfirst.frc.team6162.robot.commands.ExampleCommand;
+<<<<<<< HEAD
 import org.usfirst.frc.team6162.robot.commands.armDown;
 import org.usfirst.frc.team6162.robot.commands.armUp;
 import org.usfirst.frc.team6162.robot.commands.auto1;
@@ -51,6 +52,9 @@ import org.usfirst.frc.team6162.robot.subsystems.RDrive;
 import org.usfirst.frc.team6162.robot.subsystems.servo;
 import org.usfirst.frc.team6162.robot.subsystems.Arms;
 import org.usfirst.frc.team6162.robot.subsystems.Elevator;
+=======
+import org.usfirst.frc.team6162.robot.subsystems.RDrive;
+>>>>>>> 57665f4ef5a41e0d44ef62b28305b112cb65258b
 import org.usfirst.frc.team6162.robot.subsystems.ExampleSubsystem;
 
 /**
@@ -251,11 +255,14 @@ public class Robot extends TimedRobot {
 	}
 
 	/**
-	 * This function is called periodically during operator control.
+	 * This function is called periodically during operator control.20
+     * Defaultly, it would run 100 times per second. 
 	 */
 	@Override
 	public void teleopPeriodic() {
+        /*
 		Scheduler.getInstance().run();
+<<<<<<< HEAD
 		Robot.rdrive.driveArcade(Robot.m_oi.leftJoy.getY()*0.75, Robot.m_oi.leftJoy.getX()*0.75);
 		Robot.EC1e.setDouble(Robot.rdrive.EC1.getDistance());
 		Robot.EC2e.setDouble(Robot.rdrive.EC2.getDistance());
@@ -331,16 +338,22 @@ public class Robot extends TimedRobot {
 	    
 	    
 		/*
+=======
+		drive.driveArcade(Robot.m_oi.leftJoy.getY(), Robot.m_oi.leftJoy.getX());
+		*/
+        
+        // The step accelerate can let the motor start from a slow speed and reach full required speed in a certain time. (0.5s, for current setting)
+>>>>>>> 57665f4ef5a41e0d44ef62b28305b112cb65258b
 		if (Robot.m_oi.leftJoy.getX() == 0 && Robot.m_oi.leftJoy.getY() == 0) {
 			stepAccelerateTimer = 0;
 		}
 		else {
-			if (stepAccelerateTimer < 5) {
+			if (stepAccelerateTimer < 50) {
 				stepAccelerateTimer = stepAccelerateTimer + 1;
 				drive.driveArcade(Robot.m_oi.leftJoy.getMagnitude()*stepAccelerateTimer*0.02, Robot.m_oi.leftJoy.getX());
 			}
 		}
-		*/
+		
 	}
 
 	/**
